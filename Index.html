@@ -1,161 +1,285 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Navis Games V3</title>
-  <style>
-    body, html {
-      margin: 0;
-      height: 100%;
-      background: #020304;
-      font-family: Arial, sans-serif;
-      overflow: hidden;
-    }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Navis Games V.I.P</title>
+<style>
+  /* Reset and base styles */
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
 
-    .title {
-      text-align: center;
-      font-size: 4rem;
-      font-weight: 800;
-      color: #ff2b2b;
-      margin-top: 20px;
-      text-shadow:
-        0 0 6px rgba(255, 50, 50, 0.9),
-        0 0 12px rgba(255, 50, 50, 0.8),
-        0 0 24px rgba(255, 50, 50, 0.7);
-      position: relative;
-      z-index: 2;
-    }
+  body {
+    font-family: 'Arial', sans-serif;
+    height: 100vh;
+    background: linear-gradient(to top, #000033, #0000aa);
+    position: relative;
+    overflow: hidden;
+  }
 
-    .icon-container {
-      position: absolute;
-      top: 120px;
-      left: 20px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      z-index: 2;
-    }
+  /* Title styling */
+  #title {
+    position: fixed;
+    top: 20px;
+    width: 100%;
+    text-align: center;
+    font-family: 'Neon', 'Arial', sans-serif;
+    font-size: 3em;
+    color: #00ffff;
+    text-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff;
+    z-index: 10;
+  }
 
-    .icon-box {
-      width: 100px;
-      height: 100px;
-      border-radius: 12px;
-      background-color: #ff2b2b;
-      box-shadow:
-        0 0 20px rgba(255, 0, 0, 0.9),
-        0 0 40px rgba(255, 0, 0, 0.8),
-        0 0 60px rgba(255, 0, 0, 0.7);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: transform 0.3s ease;
-    }
+  /* Pre-access overlay */
+  #preAccess {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: purple;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    transition: opacity 0.5s ease;
+  }
 
-    .icon-box:hover {
-      transform: scale(1.1);
-    }
+  #preAccess.hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
 
-    .icon-box img {
-      max-width: 80%;
-      max-height: 80%;
-      border-radius: 8px;
-    }
+  #preAccess input[type="password"] {
+    padding: 10px 20px;
+    font-size: 1.2em;
+    border: none;
+    border-radius: 5px;
+    outline: none;
+    margin-top: 20px;
+  }
 
-    .label {
-      margin-top: 10px;
-      font-size: 1.2rem;
-      font-weight: bold;
-      color: white;
-      text-shadow:
-        0 0 6px rgba(255, 255, 255, 0.9),
-        0 0 12px rgba(255, 255, 255, 0.8),
-        0 0 24px rgba(255, 255, 255, 0.7);
-    }
+  /* Blurred background when unlocked */
+  #content {
+    filter: blur(0);
+    transition: filter 0.5s ease;
+  }
 
-    canvas#snow {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 1;
-      pointer-events: none;
-    }
-  </style>
+  #content.blurred {
+    filter: blur(5px);
+  }
+
+  /* Bubbles container */
+  #bubbles {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* Icon grid container */
+  #icon-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 20px;
+    padding: 100px 20px 20px 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    z-index: 2;
+  }
+
+  /* Individual icon boxes */
+  .icon-box {
+    border: 2px solid #fff;
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: box-shadow 0.3s, border-color 0.3s;
+    background: transparent;
+  }
+
+  .icon-box:hover {
+    box-shadow: 0 0 20px #fff;
+    border-color: #0ff;
+  }
+
+  /* Icon images inside boxes */
+  .icon-box img {
+    max-width: 50px;
+    max-height: 50px;
+    display: block;
+    margin: 0 auto;
+  }
+
+  /* Neon text style (for title) */
+  @font-face {
+    font-family: 'Neon';
+    src: local('Arial'); /* fallback, or link to a neon font if available */
+  }
+</style>
 </head>
 <body>
-  <canvas id="snow"></canvas>
 
-  <h1 class="title">Navis Games V3
-
-
-  
-  <div class="icon-container">
-    <!-- Balatro Icon -->
-    <div class="icon-box">
-      <img src="https://cdn2.steamgriddb.com/icon/066e25a0712b306a9b95230f6ec4a051.ico" alt="Balatro Icon">
-    </div>
-    <div class="label">Balatro</div>
-
-    <!-- Geometry Dash Icon -->
-    <div class="icon-box" style="margin-top: 20px;">
-      <img src="https://m.media-amazon.com/images/I/61mVIP6Oo1L.png" alt="Geometry Dash Icon">
-    </div>
-    <div class="label">Geometry Dash</div>
+<!-- Pre-access overlay -->
+<div id="preAccess">
+  <div style="background:#800080; padding:20px; border-radius:10px; text-align:center;">
+    <h2 style="color:#fff;">Enter Access Key</h2>
+    <input type="password" id="keyInput" placeholder="Enter key" />
   </div>
-  
+</div>
 
-  
+<!-- Title -->
+<h1 id="title">Navis Games V.I.P</h1>
 
-  <script>
-    (function () {
-      const canvas = document.getElementById('snow');
-      const ctx = canvas.getContext('2d');
-      let w, h, flakes;
-      const DPR = window.devicePixelRatio || 1;
-      const MAX_FLAKES = 200;
+<!-- Bubbles Canvas -->
+<div id="bubbles"></div>
 
-      function resize() {
-        w = canvas.width = window.innerWidth * DPR;
-        h = canvas.height = window.innerHeight * DPR;
-        canvas.style.width = window.innerWidth + 'px';
-        canvas.style.height = window.innerHeight + 'px';
-        initFlakes();
+<!-- Main content (hidden until key is correct) -->
+<div id="content">
+  <!-- Icon grid -->
+  <div id="icon-grid">
+    <!-- 4 rows x 5 icons = total 20 icons -->
+    <!-- Example icons, replace src and links as needed -->
+    <a href="#" class="icon-box" target="_blank">
+      <img src="https://img.icons8.com/ios-filled/50/ffffff/game-controller.png" alt="Icon 1" />
+    </a>
+    <a href="#" class="icon-box" target="_blank">
+      <img src="https://img.icons8.com/ios-filled/50/ffffff/rocket.png" alt="Icon 2" />
+    </a>
+    <a href="#" class="icon-box" target="_blank">
+      <img src="https://img.icons8.com/ios-filled/50/ffffff/controller.png" alt="Icon 3" />
+    </a>
+    <a href="#" class="icon-box" target="_blank">
+      <img src="https://img.icons8.com/ios-filled/50/ffffff/joystick.png" alt="Icon 4" />
+    </a>
+    <a href="#" class="icon-box" target="_blank">
+      <img src="https://img.icons8.com/ios-filled/50/ffffff/trophy.png" alt="Icon 5" />
+    </a>
+    
+    <a href="#" class="icon-box" target="_blank">
+      <img src="https://img.icons8.com/ios-filled/50/ffffff/star.png" alt="Icon 6" />
+    </a>
+    <a href="#" class="icon-box" target="_blank">
+      <img src="https://img.icons8.com/ios-filled/50/ffffff/medal.png" alt="Icon 7" />
+    </a>
+    <a href="#" class="icon-box" target="_blank">
+      <img src="https://img.icons8.com/ios-filled/50/ffffff/arcade.png" alt="Icon 8" />
+    </a>
+    <a href="#" class="icon-box" target="_blank">
+      <img src="https://img.icons8.com/ios-filled/50/ffffff/leaderboard.png" alt="Icon 9" />
+    </a>
+    <a href="#" class="icon-box" target="_blank">
+      <img src="https://img.icons8.com/ios-filled/50/ffffff/console.png" alt="Icon 10" />
+    </a>
+    
+    <a href="#" class="icon-box" target="_blank">
+      <img src="https://img.icons8.com/ios-filled/50/ffffff/puzzle.png" alt="Icon 11" />
+    </a>
+    <a href="#" class="icon-box" target="_blank">
+      <img src="https://img.icons8.com/ios-filled/50/ffffff/multiplayer.png" alt="Icon 12" />
+    </a>
+    <a href="#" class="icon-box" target="_blank">
+      <img src="https://img.icons8.com/ios-filled/50/ffffff/vr-headset.png" alt="Icon 13" />
+    </a>
+    <a href="#" class="icon-box" target="_blank">
+      <img src="https://img.icons8.com/ios-filled/50/ffffff/controller.png" alt="Icon 14" />
+    </a>
+    <a href="#" class="icon-box" target="_blank">
+      <img src="https://img.icons8.com/ios-filled/50/ffffff/mouse.png" alt="Icon 15" />
+    </a>
+    
+    <a href="#" class="icon-box" target="_blank">
+      <img src="https://img.icons8.com/ios-filled/50/ffffff/leaderboard.png" alt="Icon 16" />
+    </a>
+    <a href="#" class="icon-box" target="_blank">
+      <img src="https://img.icons8.com/ios-filled/50/ffffff/trophy.png" alt="Icon 17" />
+    </a>
+    <a href="#" class="icon-box" target="_blank">
+      <img src="https://img.icons8.com/ios-filled/50/ffffff/arcade.png" alt="Icon 18" />
+    </a>
+    <a href="#" class="icon-box" target="_blank">
+      <img src="https://img.icons8.com/ios-filled/50/ffffff/leaderboard.png" alt="Icon 19" />
+    </a>
+    <a href="#" class="icon-box" target="_blank">
+      <img src="https://img.icons8.com/ios-filled/50/ffffff/console.png" alt="Icon 20" />
+    </a>
+  </div>
+</div>
+
+<script>
+  // Password access logic
+  const correctKey = "77185";
+  const preAccess = document.getElementById('preAccess');
+  const keyInput = document.getElementById('keyInput');
+  const content = document.getElementById('content');
+
+  keyInput.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') {
+      if (keyInput.value === correctKey) {
+        // Unlock the site
+        preAccess.classList.add('hidden');
+        setTimeout(() => {
+          preAccess.style.display = 'none';
+        }, 500);
+        // Remove blur
+        document.getElementById('content').classList.remove('blurred');
+      } else {
+        alert('Incorrect key. Try again.');
+        keyInput.value = '';
       }
+    }
+  });
 
-      function rand(min, max) { return Math.random() * (max - min) + min; }
+  // Bubbles animation
+  const bubblesContainer = document.getElementById('bubbles');
 
-      function initFlakes() {
-        flakes = new Array(MAX_FLAKES).fill(0).map(() => ({
-          x: rand(0, w),
-          y: rand(-h, h),
-          r: rand(1 * DPR, 3 * DPR),
-          vy: rand(0.5 * DPR, 1.5 * DPR),
-          vx: rand(-0.5 * DPR, 0.5 * DPR),
-          a: rand(0, Math.PI * 2),
-          va: rand(0.002, 0.008)
-        }));
-      }
+  function createBubble() {
+    const bubble = document.createElement('div');
+    const size = Math.random() * 10 + 10; // size between 10-20px
+    bubble.style.width = size + 'px';
+    bubble.style.height = size + 'px';
+    bubble.style.background = 'rgba(0, 255, 255, 0.5)';
+    bubble.style.borderRadius = '50%';
+    bubble.style.position = 'absolute';
+    bubble.style.bottom = '0px';
+    bubble.style.left = Math.random() * 100 + '%';
+    bubble.style.opacity = Math.random();
+    bubble.style.transform = 'translateY(0)';
+    bubble.style.zIndex = 0;
+    bubblesContainer.appendChild(bubble);
 
-      function draw() {
-        ctx.clearRect(0, 0, w, h);
-        for (let f of flakes) {
-          f.a += f.va;
-          f.x += f.vx + Math.sin(f.a) * 0.5;
-          f.y += f.vy;
-          if (f.y > h) { f.y = -10; f.x = rand(0, w); }
-          ctx.beginPath();
-          ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2);
-          ctx.fillStyle = "white";
-          ctx.fill();
-        }
-        requestAnimationFrame(draw);
-      }
+    // Animate bubble
+    const duration = Math.random() * 5 + 5; // seconds
+    const translateY = - (Math.random() * 300 + 100); // pixels
+    bubble.animate([
+      { transform: 'translateY(0)', opacity: bubble.style.opacity },
+      { transform: `translateY(${translateY}px)`, opacity: 0 }
+    ], {
+      duration: duration * 1000,
+      easing: 'linear',
+      fill: 'forwards'
+    }).onfinish = () => {
+      bubble.remove();
+    };
+  }
 
-      window.addEventListener('resize', resize);
-      resize();
-      draw();
-    })();
-  </script>
+  // Generate bubbles continuously
+  setInterval(createBubble, 300);
+
+  // Optional: unlock the site visually
+  // Initially, content is not blurred; blur when preAccess appears
+  // Since you requested "around untouchable and blurred," we can add blur
+  document.getElementById('content').classList.add('blurred');
+
+</script>
 </body>
 </html>
+
+
